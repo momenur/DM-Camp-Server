@@ -42,6 +42,13 @@ async function run() {
         res.send(result);
     })
 
+    app.post('/classes', async (req, res) => {
+      const newClass = req.body;
+      console.log(newClass);
+      const result = await classesCollection.insertOne(newClass);
+      res.send(result);
+  })
+
 
     // Selected Class POST and GET
 
@@ -87,13 +94,23 @@ async function run() {
     })
 
     // Admin API Make 
-    // app.get('/adminUsers/:email', async (req, res) => {
-    //   const email = req.params.email;
-    //   const query = {email: email}
-    //   const user = await usersClassCollection.findOne(query)
-    //   const result ={ admin: user?.role === 'admin'}
-    //   res.send(result)
-    // })
+    app.get('/users/admin/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = {email: email}
+      const user = await usersClassCollection.findOne(query)
+      const result ={ admin: user?.role === 'admin'}
+      res.send(result)
+    })
+    // Instructor api
+
+    app.get('/users/instructor/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = {email: email}
+      const user = await usersClassCollection.findOne(query)
+      const result ={ instructor: user?.role === 'instructor'}
+      console.log(result);
+      res.send(result)
+    })
 
     app.patch('/users/:id', async(req, res) => {
       const id = req.params.id;
