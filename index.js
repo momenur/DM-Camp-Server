@@ -44,7 +44,6 @@ async function run() {
 
     app.post('/classes', async (req, res) => {
       const newClass = req.body;
-      console.log(newClass);
       const result = await classesCollection.insertOne(newClass);
       res.send(result);
   })
@@ -112,12 +111,27 @@ async function run() {
       res.send(result)
     })
 
+    // Update User as a Admin
     app.patch('/users/:id', async(req, res) => {
       const id = req.params.id;
       const filter = {_id: new ObjectId(id)};
       const updateDoc = {
         $set: {
           role: 'admin'
+        },
+
+      };
+      const result = await usersClassCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+
+    // Update User as a Admin
+    app.patch('/users/makeIns/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $set: {
+          role: 'instructor'
         },
 
       };
