@@ -133,13 +133,12 @@ async function run() {
         $set: {
           role: 'instructor'
         },
-
       };
       const result = await usersClassCollection.updateOne(filter, updateDoc);
       res.send(result);
     })
 
-    //  Instructor Class Approve Api
+    //  Instructor Class Approve Api patch
     app.patch('/classes/approveClass/:id', async(req, res) => {
       const id = req.params.id;
       const filter = {_id: new ObjectId(id)};
@@ -147,7 +146,6 @@ async function run() {
         $set: {
           status: 'approve'
         },
-
       };
       const result = await classesCollection.updateOne(filter, updateDoc);
       res.send(result);
@@ -161,7 +159,6 @@ async function run() {
         $set: {
           status: 'deny'
         },
-
       };
       const result = await classesCollection.updateOne(filter, updateDoc);
       res.send(result);
