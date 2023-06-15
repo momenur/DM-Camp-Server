@@ -138,7 +138,7 @@ async function run() {
       res.send(result);
     })
 
-    //  Instructor Class Approve Api patch
+    //  Instructor Class Approve Api patch 
     app.patch('/classes/approveClass/:id', async(req, res) => {
       const id = req.params.id;
       const filter = {_id: new ObjectId(id)};
@@ -151,7 +151,7 @@ async function run() {
       res.send(result);
     })
 
-    // Instructor class deny api
+    // Instructor class deny api patch
     app.patch('/classes/denyClass/:id', async(req, res) => {
       const id = req.params.id;
       const filter = {_id: new ObjectId(id)};
