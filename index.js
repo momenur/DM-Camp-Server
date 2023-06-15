@@ -50,6 +50,41 @@ async function run() {
   })
 
 
+
+
+  // UPDATE CLASS INSTRUCTOR
+  app.put('/classes/:id', async (req, res) => {
+    const id = req.params.id;
+    const filter = { _id: new ObjectId(id) }
+    const options = { upsert: true };
+    const updateInfo = req.body;
+    const updateClass = {
+        $set: {
+            name: updateInfo.name,
+            image: updateInfo.image,
+            instructorName: updateInfo.instructorName,
+            instructorEmail: updateInfo.instructorEmail,
+            seats: updateInfo.seats,
+            price: updateInfo.price
+        }
+    }
+    const result = await classesCollection.updateOne(filter, updateClass, options)
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Selected Class POST and GET
 
     app.get('/selected', async(req, res) => {
