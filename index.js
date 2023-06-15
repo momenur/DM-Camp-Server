@@ -125,7 +125,7 @@ async function run() {
       res.send(result);
     })
 
-    // Update User as a Admin
+    // Update User as a Instructor
     app.patch('/users/makeIns/:id', async(req, res) => {
       const id = req.params.id;
       const filter = {_id: new ObjectId(id)};
@@ -136,6 +136,48 @@ async function run() {
 
       };
       const result = await usersClassCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+
+    //  Instructor Class Approve Api
+    app.patch('/classes/approveClass/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $set: {
+          status: 'approve'
+        },
+
+      };
+      const result = await classesCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+
+    // Instructor class deny api
+    app.patch('/classes/denyClass/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $set: {
+          status: 'deny'
+        },
+
+      };
+      const result = await classesCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    })
+
+    // Instructor class Feedback api
+    app.patch('/classes/feedbackClass/:id', async(req, res) => {
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updateDoc = {
+        $set: {
+          feedback: 'This Class Not Approve by Admin'
+        },
+
+      };
+      const result = await classesCollection.updateOne(filter, updateDoc);
       res.send(result);
     })
 
