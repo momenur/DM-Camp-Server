@@ -34,95 +34,79 @@ async function run() {
     const usersClassCollection = client.db("summerDanceDB").collection("users");
 
 
-    app.get('/classes', async(req, res) => {
-        const result = await classesCollection.find().toArray();
-        res.send(result);
+    app.get('/classes', async (req, res) => {
+      const result = await classesCollection.find().toArray();
+      res.send(result);
     })
-    app.get('/instructors', async(req, res) => {
-        const result = await instructorsCollection.find().toArray();
-        res.send(result);
+    app.get('/instructors', async (req, res) => {
+      const result = await instructorsCollection.find().toArray();
+      res.send(result);
     })
 
     app.post('/classes', async (req, res) => {
       const newClass = req.body;
       const result = await classesCollection.insertOne(newClass);
       res.send(result);
-  })
+    })
 
-
-
-
-  // UPDATE CLASS INSTRUCTOR
-  app.put('/classes/:id', async (req, res) => {
-    const id = req.params.id;
-    const filter = { _id: new ObjectId(id) }
-    const options = { upsert: true };
-    const updateInfo = req.body;
-    const updateClass = {
+    // UPDATE CLASS INSTRUCTOR
+    app.put('/classes/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) }
+      const options = { upsert: true };
+      const updateInfo = req.body;
+      const updateClass = {
         $set: {
-            name: updateInfo.name,
-            image: updateInfo.image,
-            instructorName: updateInfo.instructorName,
-            instructorEmail: updateInfo.instructorEmail,
-            seats: updateInfo.seats,
-            price: updateInfo.price
+          name: updateInfo.name,
+          image: updateInfo.image,
+          instructorName: updateInfo.instructorName,
+          instructorEmail: updateInfo.instructorEmail,
+          seats: updateInfo.seats,
+          price: updateInfo.price
         }
-    }
-    const result = await classesCollection.updateOne(filter, updateClass, options)
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
+      }
+      const result = await classesCollection.updateOne(filter, updateClass, options)
+    })
 
 
     // Selected Class POST and GET
 
-    app.get('/selected', async(req, res) => {
+    app.get('/selected', async (req, res) => {
       const email = req.query.email;
-      if(!email){
+      if (!email) {
         res.send([]);
       }
-      const query = {email: email}
+      const query = { email: email }
       const result = await selectedClassCollection.find(query).toArray();
       res.send(result);
     })
 
 
-    app.post('/selected', async(req, res) => {
+    app.post('/selected', async (req, res) => {
       const item = req.body;
       const result = await selectedClassCollection.insertOne(item);
       res.send(result);
     })
 
-    app.delete('/selected/:id', async(req, res) => {
+    app.delete('/selected/:id', async (req, res) => {
       const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
+      const query = { _id: new ObjectId(id) };
       const result = await selectedClassCollection.deleteOne(query);
       res.send(result)
     })
 
     // User API
-    app.get('/users', async(req, res) => {
+    app.get('/users', async (req, res) => {
       const result = await usersClassCollection.find().toArray();
       res.send(result);
     })
     // User Post Api
-    app.post('/users', async(req, res) => {
+    app.post('/users', async (req, res) => {
       const user = req.body;
-      const query = {email: user.email}
+      const query = { email: user.email }
       const existingUser = await usersClassCollection.findOne(query);
-      if(existingUser){
-        return res.send({message: 'All Ready Stay User'})
+      if (existingUser) {
+        return res.send({ message: 'All Ready Stay User' })
       }
       const result = await usersClassCollection.insertOne(user);
       res.send(result)
@@ -131,25 +115,25 @@ async function run() {
     // Admin API Make 
     app.get('/users/admin/:email', async (req, res) => {
       const email = req.params.email;
-      const query = {email: email}
+      const query = { email: email }
       const user = await usersClassCollection.findOne(query)
-      const result ={ admin: user?.role === 'admin'}
+      const result = { admin: user?.role === 'admin' }
       res.send(result)
     })
     // Instructor api
 
     app.get('/users/instructor/:email', async (req, res) => {
       const email = req.params.email;
-      const query = {email: email}
+      const query = { email: email }
       const user = await usersClassCollection.findOne(query)
-      const result ={ instructor: user?.role === 'instructor'}
+      const result = { instructor: user?.role === 'instructor' }
       res.send(result)
     })
 
     // Update User as a Admin
-    app.patch('/users/:id', async(req, res) => {
+    app.patch('/users/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
           role: 'admin'
@@ -161,9 +145,9 @@ async function run() {
     })
 
     // Update User as a Instructor
-    app.patch('/users/makeIns/:id', async(req, res) => {
+    app.patch('/users/makeIns/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
           role: 'instructor'
@@ -174,9 +158,9 @@ async function run() {
     })
 
     //  Instructor Class Approve Api patch 
-    app.patch('/classes/approveClass/:id', async(req, res) => {
+    app.patch('/classes/approveClass/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
           status: 'approve'
@@ -187,9 +171,9 @@ async function run() {
     })
 
     // Instructor class deny api patch
-    app.patch('/classes/denyClass/:id', async(req, res) => {
+    app.patch('/classes/denyClass/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
           status: 'deny'
@@ -200,9 +184,9 @@ async function run() {
     })
 
     // Instructor class Feedback api
-    app.patch('/classes/feedbackClass/:id', async(req, res) => {
+    app.patch('/classes/feedbackClass/:id', async (req, res) => {
       const id = req.params.id;
-      const filter = {_id: new ObjectId(id)};
+      const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
           feedback: 'This Class Not Approve by Admin'
@@ -213,9 +197,9 @@ async function run() {
     })
 
     // PAYMENT APIS
-    app.post('/create-payment-intent', async(req, res) => {
-      const {price} = req.body;
-      const amount = price*100;
+    app.post('/create-payment-intent', async (req, res) => {
+      const { price } = req.body;
+      const amount = price * 100;
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: 'usd',
@@ -238,9 +222,9 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-    res.send('Summer Dance Camp Is Running')
+  res.send('Summer Dance Camp Is Running')
 })
 
 app.listen(port, () => {
-    console.log(`Summer Dance is running on PORT ${port}`);
+  console.log(`Summer Dance is running on PORT ${port}`);
 })
