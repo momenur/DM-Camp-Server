@@ -175,12 +175,10 @@ async function run() {
         $set: {
           feedback: 'This Class Not Approve by Admin'
         },
-
       };
       const result = await classesCollection.updateOne(filter, updateDoc);
       res.send(result);
     })
-
 
     // PAYMENT APIS
     app.post('/create-payment-intent', async(req, res) => {
