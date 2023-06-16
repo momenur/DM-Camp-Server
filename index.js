@@ -7,9 +7,14 @@ const stripe = require('stripe')(process.env.PAYMENT_KEY)
 
 
 //  middleWire
-app.use(cors());
-app.use(express.json());
+const corsOptions ={
+  origin:'*', 
+  credentials:true,
+  optionSuccessStatus:200,
+}
 
+app.use(cors(corsOptions))
+app.use(express.json());
 
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
@@ -24,15 +29,33 @@ const client = new MongoClient(uri, {
   }
 });
 
+const dbConnect = async () => {
+  try {
+    client.connect();
+    console.log(" Database Connected Successfully✅ ");
+
+  } catch (error) {
+    console.log(error.name, error.message);
+  }
+}
+dbConnect()
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const classesCollection = client.db("summerDanceDB").collection("classes");
     const instructorsCollection = client.db("summerDanceDB").collection("instructors");
     const selectedClassCollection = client.db("summerDanceDB").collection("selectedClass");
     const usersClassCollection = client.db("summerDanceDB").collection("users");
 
+    app.get('/', (req, res) => {
+      try {
+        res.send('Restaurant Server Is Running 🚩')
+      } catch (error) {
+        console.log(error.name, error.message);
+      }
+    })
 
     app.get('/classes', async (req, res) => {
       const result = await classesCollection.find().toArray();
@@ -66,6 +89,7 @@ async function run() {
         }
       }
       const result = await classesCollection.updateOne(filter, updateClass, options)
+      res.send(result)
     })
 
 
@@ -211,7 +235,7 @@ async function run() {
     })
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
@@ -221,9 +245,9 @@ async function run() {
 run().catch(console.dir);
 
 
-app.get('/', (req, res) => {
-  res.send('Summer Dance Camp Is Running')
-})
+// app.get('/', (req, res) => {
+//   res.send('Summer Dance Camp Is Running')
+// })
 
 app.listen(port, () => {
   console.log(`Summer Dance is running on PORT ${port}`);
